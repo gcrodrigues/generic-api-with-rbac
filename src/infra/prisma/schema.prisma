@@ -7,23 +7,41 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 model User {
-  id    String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email String  @unique
-  name  String
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email String @unique
+  name String
   password String 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  roles Roles[]
 }
 
 model UserToken {
-  id    String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   token String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
+model Roles {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  users User[]
+  permissions Permissions[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Permissions {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resource String
+  action String
+  roles Roles[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
