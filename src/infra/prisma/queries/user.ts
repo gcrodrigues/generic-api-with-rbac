@@ -14,7 +14,15 @@ export default class PrismaUserQueries implements IUserRepository {
 
   async create(user: CreateUserDto) {
     const createdUser = await this.prisma.user.create({
-      data: user
+      data: {
+        ...user,
+        roles: {
+          connect: user.roles.map(id => ({ id: id}))
+        }
+      },
+      include: {
+        roles: true
+      }
     })
 
     return createdUser

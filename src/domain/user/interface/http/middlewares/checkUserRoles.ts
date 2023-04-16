@@ -20,16 +20,16 @@ export default function checkUserRoles(roles: string[]): ( req: Request,
     try {
       const userRoles = await getUserRolesService.execute(id)
 
-      if(userRoles.filter(role => role.name === 'Admin')) {
-        return next()
-      }
-
       const authorizedRoles = userRoles.filter(role => roles.includes(role.name))
 
+      if(userRoles.filter(role => role.name === 'ADMIN').length) {
+        return next()
+      }
+      
       if(!authorizedRoles.length) {
         throw new AppError('Forbidden', 403);
       }
-
+      
       return next();
     } catch (err) {
       throw new AppError('Forbidden', 403);

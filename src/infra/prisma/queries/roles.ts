@@ -14,7 +14,7 @@ class RolesRepository implements IRolesRepository {
     const roles = await this.prisma.roles.findMany({
       where: {
         users: {
-          every: {
+          some: {
             id: user_id
           }
         }
