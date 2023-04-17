@@ -16,7 +16,6 @@ export class CreateRoleService {
 
     const roleAlreadyExists = await this.rolesRepository.findByName(role.name)
 
-    console.log(roleAlreadyExists)
 
     if(roleAlreadyExists) {
       throw new AppError('This role already exists', 400);
