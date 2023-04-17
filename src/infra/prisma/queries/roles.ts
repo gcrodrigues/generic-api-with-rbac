@@ -3,6 +3,7 @@ import { PrismaClient, Roles } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 import IRolesRepository from '../../../domain/roles/repositories/rolesRepository';
 import { CreateRoleDto } from '../../../domain/roles/dtos/createRole.dto';
+import { UpdateRolePermissionsDto } from '../../../domain/roles/dtos/updateRolePermissions';
 
 @injectable()
 class RolesRepository implements IRolesRepository {
@@ -51,6 +52,43 @@ class RolesRepository implements IRolesRepository {
       }
     })
 
+    return roles
+  }
+
+  public async updatePermissions(role: UpdateRolePermissionsDto): Promise<Roles> {
+    const permissions = await this.prisma.permissions.findMany({
+      where: {
+        roles:{
+          some: {
+            id: role.id
+          } 
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+
+    const combinedPermissions = role.permissions.concat(permissions.map(p => p.id));
+    const newPermissions = combinedPermissions.filter((permission, index) => {
+      return combinedPermissions.indexOf(permission) === index && role.permissions.includes(permission);
+    });
+
+    const roles = await this.prisma.roles.update({
+      where: {
+        id: role.id
+      },
+      data: {
+        permissions: {
+           connect: newPermissions.map(id => ({ id: id})),
+           disconnect: permissions.map(id => id)
+        }
+      },
+      include: {
+        permissions: true
+      }
+    })
+    
     return roles
   }
 }
