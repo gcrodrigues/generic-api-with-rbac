@@ -25,6 +25,24 @@ class PermissionsRepository implements IPermissionsRepository {
     return permissions
   }
 
+  public async getByUserId(user_id: string): Promise<Permissions[]> {
+    const permissions = await this.prisma.permissions.findMany({
+      where: {
+        roles: {
+          some: {
+            users: { 
+              some: {
+                id: user_id
+              }
+            }
+          }
+        }   
+      }
+    })
+
+    return permissions
+  }
+
   public async create(permission: CreatePermissionDto): Promise<Permissions> {
     const createdPermission = await this.prisma.permissions.create({
       data: {

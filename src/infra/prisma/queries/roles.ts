@@ -49,6 +49,9 @@ class RolesRepository implements IRolesRepository {
             id: user_id
           }
         }
+      }, 
+      include: {
+        permissions: true
       }
     })
 
@@ -80,15 +83,15 @@ class RolesRepository implements IRolesRepository {
       },
       data: {
         permissions: {
-           connect: newPermissions.map(id => ({ id: id})),
-           disconnect: permissions.map(id => id)
+          disconnect: permissions.map(id => id),
+          connect: newPermissions.map(id => ({ id: id}))
         }
       },
       include: {
         permissions: true
       }
     })
-    
+
     return roles
   }
 }

@@ -39,7 +39,19 @@ export default class PrismaUserQueries implements IUserRepository {
   }
 
   async findById(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: id }})
+    const user = await this.prisma.user.findUnique({ 
+      where: { id: id }, 
+      include: { 
+        roles: {
+          select: { 
+            id: true,
+            name: true,
+            permissions: true
+          }
+        }
+      }
+    })
+    
     return user
   }
 

@@ -1,15 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-
 import AppError from '../../../../../infra/errors/AppError';
 import { container } from 'tsyringe';
-import { GetPermissionsByRolesIdService } from '../../../services/getPermissionsByRoleId';
-
-interface ITokenPayload {
-  iat: number;
-  exp: number;
-  sub: string;
-}
+import { GetPermissionsByUserIdService } from '../../../services/getPermissionsByUserId'; 
 
 export default function checkPermissions(permissions: string[]): (req: Request,
   res: Response,
@@ -21,15 +14,15 @@ export default function checkPermissions(permissions: string[]): (req: Request,
   ) => {
     const { id } = req.user
 
-    const getPermissionsByRoleIdService = container.resolve(GetPermissionsByRolesIdService)
+    const getUserPermissions = container.resolve(GetPermissionsByUserIdService)
 
     if (!id) {
       throw new AppError('Forbidden', 403);
     }
     try {
-      const userRolePermissions = await getPermissionsByRoleIdService.execute(id)
-
-      const isAuthorized = userRolePermissions.filter(permission => permissions.includes(`${permission.resource}:${permission.action}`))
+      const userPermissions = await getUserPermissions.execute(id)
+      
+      const isAuthorized = userPermissions.filter(permission => permissions.includes(`${permission.resource}:${permission.action}`))
 
       if(!isAuthorized.length) {
         throw new AppError('Forbidden', 403);

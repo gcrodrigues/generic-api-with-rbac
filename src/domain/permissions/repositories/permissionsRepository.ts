@@ -5,4 +5,5 @@ export default interface IPermissionsRepository {
   create(permission: CreatePermissionDto): Promise<Permissions>
   findByActionAndResource(permission: CreatePermissionDto): Promise<Permissions | null>
   getByRoleId(role_id: string): Promise<Permissions[]>;
+  getByUserId(user_id: string): Promise<Permissions[]>;
 }
