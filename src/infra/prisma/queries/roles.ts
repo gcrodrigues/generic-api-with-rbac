@@ -41,6 +41,22 @@ class RolesRepository implements IRolesRepository {
     return role
   }
 
+  async deactivate(id: string) {
+    const deletedRole = await this.prisma.roles.delete({
+      where: {
+        id,
+      },
+    })
+
+    return deletedRole
+  }
+
+  async findById(role_id: string): Promise<Roles | null> {
+    const role = await this.prisma.roles.findFirst({ where: { id: role_id} })
+    return role
+  }
+
+
   public async getByUserId(user_id: string): Promise<Roles[]> {
     const roles = await this.prisma.roles.findMany({
       where: {

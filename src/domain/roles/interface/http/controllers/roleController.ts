@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 import { CreateRoleService } from '../../../services/createRole';
 import { UpdateRolePermissionsService } from '../../../services/updateRolePermissions';
 import { ListRolesService } from '../../../services/listRolesService';
+import { DeactivateRoleService } from '../../../services/deactivateRole';
 
 export class RoleController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -27,4 +28,12 @@ export class RoleController {
     
     return res.status(200).json(roles)
   }
+
+  async deactivate(req: Request, res: Response): Promise<Response> {
+    const { id } = req.body
+    const deactivateRole = container.resolve(DeactivateRoleService);
+    const deactivatedRole = await deactivateRole.execute(id); 
+    
+    return res.status(200).json(deactivatedRole)
+}
 }
