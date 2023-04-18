@@ -22,7 +22,7 @@ export default function checkUserRoles(roles: string[]): ( req: Request,
 
       const authorizedRoles = userRoles.filter(role => roles.includes(role.name))
 
-      if(userRoles.filter(role => role.name === 'ADMIN').length) {
+      if(userRoles.filter(role => role.name === 'Admin').length) {
         return next()
       }
       
