@@ -10,5 +10,6 @@ const userController = new UserController();
 
 usersRouter.delete('/deactivate', ensureAuthenticated, checkPermissions([UserPermissions.DELETE_USER]), userController.deactivate);
 usersRouter.post('/', userController.create);
+usersRouter.put('/', ensureAuthenticated, checkPermissions([UserPermissions.UPDATE_USER]), userController.update);
 
 export default usersRouter ;
