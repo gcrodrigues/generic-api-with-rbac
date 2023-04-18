@@ -34,6 +34,6 @@ export class RoleController {
     const deactivateRole = container.resolve(DeactivateRoleService);
     const deactivatedRole = await deactivateRole.execute(id); 
     
-    return res.status(200).json(deactivatedRole)
+    return res.status(200).json({ id: deactivatedRole.id })
 }
 }
