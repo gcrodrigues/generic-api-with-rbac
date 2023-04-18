@@ -7,4 +7,5 @@ export default interface IRolesRepository {
   findByName(name: string): Promise<Roles | null>;
   getByUserId(user_id: string): Promise<Roles[]>;
   updatePermissions(role: UpdateRolePermissionsDto): Promise<Roles>
+  findAll(): Promise<Roles[]>
 }

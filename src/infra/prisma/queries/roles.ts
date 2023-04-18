@@ -58,6 +58,12 @@ class RolesRepository implements IRolesRepository {
     return roles
   }
 
+  public async findAll(): Promise<Roles[]> {
+    const roles = await this.prisma.roles.findMany()
+
+    return roles
+  }
+
   public async updatePermissions(role: UpdateRolePermissionsDto): Promise<Roles> {
     const permissions = await this.prisma.permissions.findMany({
       where: {

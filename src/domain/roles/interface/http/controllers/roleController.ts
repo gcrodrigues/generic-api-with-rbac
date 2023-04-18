@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { CreateRoleService } from '../../../services/createRole';
 import { UpdateRolePermissionsService } from '../../../services/updateRolePermissions';
+import { ListRolesService } from '../../../services/listRolesService';
 
 export class RoleController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -18,5 +19,12 @@ export class RoleController {
     const role = await updateRole.execute({ id, permissions }); 
     
     return res.status(200).json(role)
+  }
+
+  async index(req: Request, res: Response): Promise<Response> {
+    const listRoles = container.resolve(ListRolesService);
+    const roles = await listRoles.execute(); 
+    
+    return res.status(200).json(roles)
   }
 }
