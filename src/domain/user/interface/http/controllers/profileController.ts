@@ -17,9 +17,9 @@ export class ProfileController {
   }
 
   async update(req: Request, res: Response): Promise<Response> {
-    const { id, email, name } = req.body;
+    const { id, email, name, roles } = req.body;
     const updateUser = container.resolve(UpdateUserService);
-    const updatedUser = await updateUser.execute({id, name, email}); 
+    const updatedUser = await updateUser.execute({id, name, email, roles}); 
     
     // @ts-expect-error deleting user password
     delete updatedUser.password;

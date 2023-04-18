@@ -56,11 +56,41 @@ export default class PrismaUserQueries implements IUserRepository {
   }
 
   async update(user: UpdateUserDto) {
+    const roles = await this.prisma.roles.findMany({
+      where: {
+        users:{
+          some: {
+            id: user.id
+          } 
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+
+    const combinedRoles = user.roles.concat(roles.map(p => p.id));
+    const newRoles = combinedRoles.filter((permission, index) => {
+      return combinedRoles.indexOf(permission) === index && user.roles.includes(permission);
+    });
+
     const updatedUser = await this.prisma.user.update({ 
       where: { id: user.id }, 
       data: {
         name: user.name,
-        email: user.email
+        email: user.email, 
+        roles: { 
+          disconnect: roles.map(id => id),
+          connect: newRoles.map(id => ({ id: id}))
+        }
+      }, include: {
+        roles: {
+          select: {
+            id: true,
+            name: true,
+            permissions: true
+          }
+        }
       }
     })
     
