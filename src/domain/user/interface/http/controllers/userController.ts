@@ -30,6 +30,6 @@ export class UserController {
 
     // @ts-expect-error deleting user password
     delete updatedUser.password;
-    return res.status(200).json({updatedUser})
+    return res.status(200).json(updatedUser)
   }
 }
