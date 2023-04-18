@@ -68,6 +68,10 @@ class PermissionsRepository implements IPermissionsRepository {
       }
     })
   }
+
+  public async findAll(): Promise<Permissions[]> {
+    return await this.prisma.permissions.findMany()
+  }
 }
 
 export default PermissionsRepository;

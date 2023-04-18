@@ -8,5 +8,6 @@ const permissionsRouter = Router();
 const permissionController = new PermissionsController();
 
 permissionsRouter.post('/', ensureAuthenticated, checkUserRoles(['ADMIN']), permissionController.create);
+permissionsRouter.get('/', ensureAuthenticated, permissionController.index);
 
 export default permissionsRouter ;
