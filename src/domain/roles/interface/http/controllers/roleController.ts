@@ -35,5 +35,5 @@ export class RoleController {
     const deactivatedRole = await deactivateRole.execute(id); 
     
     return res.status(200).json({ id: deactivatedRole.id })
-}
+  }
 }

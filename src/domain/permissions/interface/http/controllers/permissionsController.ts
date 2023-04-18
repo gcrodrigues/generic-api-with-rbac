@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 
 import { CreatePermissionService } from '../../../services/createPermission';
 import { ListPermissionsService } from '../../../services/listPermissionsService';
+import { DeactivatePermissionService } from '../../../services/deactivatePermission';
 
 export class PermissionsController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -19,4 +20,12 @@ export class PermissionsController {
     
     return res.status(200).json(permissions)
   }
+
+  async deactivate(req: Request, res: Response): Promise<Response> {
+    const { id } = req.body
+    const deactivatePermission = container.resolve(DeactivatePermissionService);
+    const deactivatedPermission = await deactivatePermission.execute(id); 
+    
+    return res.status(200).json({ id: deactivatedPermission.id })
+}
 }

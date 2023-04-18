@@ -54,6 +54,22 @@ class PermissionsRepository implements IPermissionsRepository {
     return createdPermission
   }
 
+
+  async deactivate(id: string) {
+    const deletedPermission = await this.prisma.permissions.delete({
+      where: {
+        id,
+      },
+    })
+
+    return deletedPermission
+  }
+
+  async findById(id: string): Promise<Permissions | null> {
+    const permission = await this.prisma.permissions.findFirst({ where: { id: id} })
+    return permission
+  }
+
   public async findByActionAndResource(permission: CreatePermissionDto): Promise<Permissions | null> {
     return await this.prisma.permissions.findFirst({
       where: {

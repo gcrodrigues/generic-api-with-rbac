@@ -11,5 +11,7 @@ const permissionController = new PermissionsController();
 
 permissionsRouter.post('/', ensureAuthenticated, checkUserRoles(['Admin']), permissionController.create);
 permissionsRouter.get('/', ensureAuthenticated, checkPermissions([Permissions.LIST_ALL_PERMISSIONS]), permissionController.index);
+permissionsRouter.delete('/deactivate', ensureAuthenticated, checkPermissions([Permissions.DEACTIVATE_PERMISSION]), permissionController.deactivate);
+
 
 export default permissionsRouter ;
