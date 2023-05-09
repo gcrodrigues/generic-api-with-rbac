@@ -54,8 +54,7 @@ class ResetPasswordService {
 
    const hashedPassword = await this.hashProvider.generateHash(password);
 
-    const userteste = await this.userRepository.updatePassword({...user, password: hashedPassword });
-    console.log(userteste)
+   await this.userRepository.updatePassword({...user, password: hashedPassword });
   }
 }
 

@@ -19,6 +19,10 @@ export class CreateUserService {
     if(!isPasswordValid) {
       throw new AppError("Password invalid");
     }
+    
+    if(!user.roles) {
+      throw new AppError("User must have at least one role");
+    }
 
     const userAlreadyExists = await this.userRepository.findByEmail(user.email)
     

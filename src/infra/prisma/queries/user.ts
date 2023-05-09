@@ -14,7 +14,15 @@ export default class PrismaUserQueries implements IUserRepository {
 
   async create(user: CreateUserDto) {
     const createdUser = await this.prisma.user.create({
-      data: user
+      data: {
+        ...user,
+        roles: {
+          connect: user.roles.map(id => ({ id: id}))
+        }
+      },
+      include: {
+        roles: true
+      }
     })
 
     return createdUser
@@ -31,16 +39,58 @@ export default class PrismaUserQueries implements IUserRepository {
   }
 
   async findById(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: id }})
+    const user = await this.prisma.user.findUnique({ 
+      where: { id: id }, 
+      include: { 
+        roles: {
+          select: { 
+            id: true,
+            name: true,
+            permissions: true
+          }
+        }
+      }
+    })
+    
     return user
   }
 
   async update(user: UpdateUserDto) {
+    const roles = await this.prisma.roles.findMany({
+      where: {
+        users:{
+          some: {
+            id: user.id
+          } 
+        }
+      },
+      select: {
+        id: true
+      }
+    })
+
+    const combinedRoles = user.roles.concat(roles.map(p => p.id));
+    const newRoles = combinedRoles.filter((permission, index) => {
+      return combinedRoles.indexOf(permission) === index && user.roles.includes(permission);
+    });
+
     const updatedUser = await this.prisma.user.update({ 
       where: { id: user.id }, 
       data: {
         name: user.name,
-        email: user.email
+        email: user.email, 
+        roles: { 
+          disconnect: roles.map(id => id),
+          connect: newRoles.map(id => ({ id: id}))
+        }
+      }, include: {
+        roles: {
+          select: {
+            id: true,
+            name: true,
+            permissions: true
+          }
+        }
       }
     })
     
