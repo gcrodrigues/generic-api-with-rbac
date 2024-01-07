@@ -15,12 +15,6 @@ export class DeactivateUserService {
       throw new AppError("This user do not exists");
     }
 
-    const createdUser = await this.userRepository.deactivate(id);
-
-    if(!createdUser.id) {
-      throw new AppError("Could not deactivate user");
-    }
-
-    return createdUser
+    this.userRepository.deactivate(id); 
   }
 }

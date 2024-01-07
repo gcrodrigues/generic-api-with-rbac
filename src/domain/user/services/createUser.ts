@@ -20,7 +20,7 @@ export class CreateUserService {
       throw new AppError("Password invalid");
     }
     
-    if(!user.roles) {
+    if(!user.roles.length) {
       throw new AppError("User must have at least one role");
     }
 

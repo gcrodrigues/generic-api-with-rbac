@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import AppError from '../../../../../infra/errors/AppError';
-import { GetUserRolesService } from '../../../../roles/services/getUserRoles';
+import { GetUserRolesService } from '../../../services/getUserRoles';
 import { container } from 'tsyringe';
 
 export default function checkUserRoles(roles: string[]): ( req: Request,

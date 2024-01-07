@@ -35,24 +35,18 @@ export default class PrismaUserQueries implements IUserRepository {
 
   async findByEmail(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email: email }})
-    return user
+    return user || undefined
   }
 
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({ 
       where: { id: id }, 
       include: { 
-        roles: {
-          select: { 
-            id: true,
-            name: true,
-            permissions: true
-          }
-        }
+        roles: true
       }
     })
     
-    return user
+    return user || undefined
   }
 
   async update(user: UpdateUserDto) {
@@ -69,9 +63,9 @@ export default class PrismaUserQueries implements IUserRepository {
       }
     })
 
-    const combinedRoles = user.roles.concat(roles.map(p => p.id));
-    const newRoles = combinedRoles.filter((permission, index) => {
-      return combinedRoles.indexOf(permission) === index && user.roles.includes(permission);
+    const combinedRoles = user.roles?.concat(roles.map(p => p.id));
+    const newRoles = combinedRoles?.filter((permission, index) => {
+      return combinedRoles.indexOf(permission) === index && user?.roles?.includes(permission);
     });
 
     const updatedUser = await this.prisma.user.update({ 
@@ -81,16 +75,10 @@ export default class PrismaUserQueries implements IUserRepository {
         email: user.email, 
         roles: { 
           disconnect: roles.map(id => id),
-          connect: newRoles.map(id => ({ id: id}))
+          connect: newRoles?.map(id => ({ id: id}))
         }
       }, include: {
-        roles: {
-          select: {
-            id: true,
-            name: true,
-            permissions: true
-          }
-        }
+        roles: true
       }
     })
     
@@ -98,13 +86,44 @@ export default class PrismaUserQueries implements IUserRepository {
   }
 
   async updatePassword(user: ChangePasswordDto) {
-    const updatedUser = await this.prisma.user.update({ 
+    const updatedUserPassword = await this.prisma.user.update({ 
       where: { id: user.id }, 
       data: {
         password: user.password,
       }
     })
     
-    return updatedUser
+    return updatedUserPassword
+  }
+
+  async getRolesByUserId(id: string) {
+    const user = await this.prisma.user.findUnique({ 
+      where: { id: id }, 
+      include: { 
+        roles: true
+      }
+    })
+
+    return user?.roles || undefined
+  }
+
+
+  public async findPermissionsByUserId(user_id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: user_id
+      },
+      include: {
+        roles: {
+          include: {
+            permissions: true
+          }
+        }
+      }
+    })
+
+    const permissions = user?.roles.flatMap(role => role.permissions.map(permission => permission))
+
+    return permissions
   }
 }

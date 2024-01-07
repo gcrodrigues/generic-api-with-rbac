@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import IUserRepository from "../repositories/userRepository";
 import AppError from "../../../infra/errors/AppError";
+import { User } from "@prisma/client";
 import { UpdateUserDto } from "../dtos/updateUser.dto";
 
 @injectable()
@@ -17,10 +18,6 @@ export class UpdateUserService {
     }
 
     const updatedUser = await this.userRepository.update(user);
-
-    if(!updatedUser) {
-      throw new AppError("Could not update user");
-    }
 
     return updatedUser
   }
