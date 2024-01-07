@@ -24,8 +24,8 @@ export class PermissionsController {
   async deactivate(req: Request, res: Response): Promise<Response> {
     const { id } = req.body
     const deactivatePermission = container.resolve(DeactivatePermissionService);
-    const deactivatedPermission = await deactivatePermission.execute(id); 
+    await deactivatePermission.execute(id); 
     
-    return res.status(200).json({ id: deactivatedPermission.id })
+    return res.status(200)
 }
 }

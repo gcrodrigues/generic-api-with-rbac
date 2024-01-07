@@ -8,40 +8,7 @@ import { CreatePermissionDto } from '../../../domain/permissions/dtos/createPerm
 class PermissionsRepository implements IPermissionsRepository {
   constructor( 
     @inject("PrismaClient") private prisma: PrismaClient
-  ) {
-  }
-
-  public async getByRoleId(role_id: string): Promise<Permissions[]> {
-    const permissions = await this.prisma.permissions.findMany({
-      where: {
-        roles: {
-          every: {
-            id: role_id
-          }
-        }
-      }
-    })
-
-    return permissions
-  }
-
-  public async getByUserId(user_id: string): Promise<Permissions[]> {
-    const permissions = await this.prisma.permissions.findMany({
-      where: {
-        roles: {
-          some: {
-            users: { 
-              some: {
-                id: user_id
-              }
-            }
-          }
-        }   
-      }
-    })
-
-    return permissions
-  }
+  ) {}
 
   public async create(permission: CreatePermissionDto): Promise<Permissions> {
     const createdPermission = await this.prisma.permissions.create({
@@ -56,13 +23,11 @@ class PermissionsRepository implements IPermissionsRepository {
 
 
   async deactivate(id: string) {
-    const deletedPermission = await this.prisma.permissions.delete({
+    await this.prisma.permissions.delete({
       where: {
         id,
       },
     })
-
-    return deletedPermission
   }
 
   async findById(id: string): Promise<Permissions | null> {

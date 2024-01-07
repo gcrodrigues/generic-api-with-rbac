@@ -15,12 +15,6 @@ export class DeactivatePermissionService {
       throw new AppError("This role do not exists");
     }
     
-    const deletedPermission = await this.permissionsRepository.deactivate(id);
-
-    if(!deletedPermission) {
-      throw new AppError("Could not deactivate role");
-    }
-
-    return deletedPermission
+    await this.permissionsRepository.deactivate(id);
   }
 }
