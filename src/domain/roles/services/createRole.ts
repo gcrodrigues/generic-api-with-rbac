@@ -10,12 +10,7 @@ export class CreateRoleService {
   ) {}
   
   async execute(role: CreateRoleDto) {
-    if(!role.name) {
-      throw new AppError('Role must have a name', 400);
-    }
-
     const roleAlreadyExists = await this.rolesRepository.findByName(role.name)
-
 
     if(roleAlreadyExists) {
       throw new AppError('This role already exists', 400);

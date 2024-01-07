@@ -4,6 +4,7 @@ import { CreateRoleService } from '../../../services/createRole';
 import { UpdateRolePermissionsService } from '../../../services/updateRolePermissions';
 import { ListRolesService } from '../../../services/listRolesService';
 import { DeactivateRoleService } from '../../../services/deactivateRole';
+import { ListPermissionsByRoleIdService } from '../../../services/listPermissionsByRoleId';
 
 export class RoleController {
   async create(req: Request, res: Response): Promise<Response> {
@@ -32,8 +33,18 @@ export class RoleController {
   async deactivate(req: Request, res: Response): Promise<Response> {
     const { id } = req.body
     const deactivateRole = container.resolve(DeactivateRoleService);
-    const deactivatedRole = await deactivateRole.execute(id); 
+    await deactivateRole.execute(id); 
     
-    return res.status(200).json({ id: deactivatedRole.id })
+    return res.status(200)
+  }
+
+  public async listRolePermissions(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const listPermissionsByRoleId = container.resolve(
+      ListPermissionsByRoleIdService,
+    );
+    const permissions = await listPermissionsByRoleId.execute(id);
+
+    return res.status(200).json(permissions);
   }
 }

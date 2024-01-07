@@ -116,6 +116,20 @@ class RolesRepository implements IRolesRepository {
 
     return roles
   }
+
+
+  public async findPermissionsByRoleId(role_id: string) {
+    const role = await this.prisma.roles.findUnique({
+      where: {
+        id: role_id
+      }, 
+      include: {
+        permissions: true
+      }
+    })
+
+    return role?.permissions
+  }
 }
 
 export default RolesRepository;

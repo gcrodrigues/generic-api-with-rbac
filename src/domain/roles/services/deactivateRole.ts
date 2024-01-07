@@ -15,11 +15,7 @@ export class DeactivateRoleService {
       throw new AppError("This role do not exists");
     }
     
-    const deletedRole = await this.rolesRepository.deactivate(id);
-
-    if(!deletedRole) {
-      throw new AppError("Could not deactivate role");
-    }
+    const deletedRole = this.rolesRepository.deactivate(id);
 
     return deletedRole
   }
